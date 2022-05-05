@@ -33,5 +33,5 @@ jobs:
       with:
         image: oss-fuzz-base/base-builder-python:v1
         registry: gcr.io
-        username: syedafazilath.jahaa@bt.com
+        username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
