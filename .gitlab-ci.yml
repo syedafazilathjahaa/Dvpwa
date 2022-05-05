@@ -1,22 +1,12 @@
-stages:
-  - fuzz
-variables:
-  SANITIZER: address
-  CFL_PLATFORM: gitlab
+image: docker:v1
 
-clusterfuzzlite-corpus:
-  image:
-    name: gcr.io/oss-fuzz-base/clusterfuzzlite-run-fuzzers:v1
-    entrypoint: [""]
-  stage: fuzz
-  rules:
-    - if: $MODE == "prune"
-    - if: $MODE == "batch"
-  before_script:
-    - export CFL_CONTAINER_ID=`cut -c9- < /proc/1/cpuset`
+before_script:
+  - docker login -u "gudevr" -p "Temper!2019558" registry.docker.nat.bt.com/harbor/
+
+build-master:
+  stage: build
   script:
-    - python3 "/opt/oss-fuzz/infra/cifuzz/cifuzz_combined_entrypoint.py"
-  artifacts:
-    when: always
-    paths:
-      - artifacts/
+    - docker build --pull -t "registry.docker.nat.bt.com/oss-fuzz/oss-fuzz-base/base-builder-python:v1" .
+    - docker push "registry.docker.nat.bt.com/oss-fuzz/oss-fuzz-base/base-builder-python:v1"
+  only:
+    - master
