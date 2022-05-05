@@ -30,7 +30,7 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         
     - name: Build and Push Images
-      uses: mr-smithers-excellent/docker-build-push@v4
+      uses: docker/build-push-action@v3.0.0
       with:
          image: khushi2/oss-fuzz:v1
          registry: docker.io
