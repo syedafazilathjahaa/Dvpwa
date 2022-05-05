@@ -15,5 +15,5 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build registry.docker.nat.bt.com/oss-fuzz/oss-fuzz-base/base-builder-python:v1
+      run: docker build gcr.io/oss-fuzz-base/base-builder-python:v1
            
