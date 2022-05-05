@@ -33,7 +33,7 @@ jobs:
       with:
         image: oss-fuzz-base/base-builder-python:v1
         registry: gcr.io
-        username: ${{ secrets.DOCKER_USERNAME }}
+        username: reddykhushbu@gmail.com
         password: ${{ secrets.DOCKER_PASSWORD }}
        
     
