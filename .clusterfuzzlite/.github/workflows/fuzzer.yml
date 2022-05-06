@@ -42,6 +42,7 @@ permissions:
         matrix:
             sanitizer: [address, undefined, memory]
     steps:
+    - uses: actions/checkout@v3
     - name: Build Fuzzers (${{ matrix.sanitizer }})
       id: build
       uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@master
