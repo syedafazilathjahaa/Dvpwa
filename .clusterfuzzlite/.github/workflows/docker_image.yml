@@ -28,6 +28,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install atheris
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    
+    steps:
+    -uses: actions/checkout@v3
         
     - name: Build and push docker image
       uses: mr-smithers-excellent/docker-build-push@v4
