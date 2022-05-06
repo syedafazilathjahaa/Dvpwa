@@ -22,6 +22,8 @@ jobs:
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
       with:
+        path: .clusterfuzzlite
+        dockerfile: .clusterfuzzlite/Dockerfile
         python-version: "3.10"
     - name: Install dependencies
       run: |
@@ -29,14 +31,10 @@ jobs:
         pip install atheris
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     
-    steps:
-    -uses: actions/checkout@v3
         
     - name: Build and push docker image
       uses: mr-smithers-excellent/docker-build-push@v4
       with:
-        path: .clusterfuzzlite
-        dockerfile: .clusterfuzzlite/Dockerfile
         image: khushi2/oss-fuzz
         registry: docker.io
         username: ${{ secrets.DOCKER_USERNAME }}
