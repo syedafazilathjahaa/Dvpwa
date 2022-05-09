@@ -6,8 +6,11 @@ name: Python application
 on:
   push:
     branches: [ master ]
+    paths: [oss-fuzz/infra/**, oss-fuzz/projects/**]
   pull_request:
     branches: [ master ]
+    paths: [oss-fuzz/infra/**, oss-fuzz/projects/**]
+    
 
 permissions:
   contents: read
