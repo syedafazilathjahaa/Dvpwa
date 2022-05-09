@@ -50,16 +50,18 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build Fuzzers (${{ matrix.sanitizer }})
       id: build
-      uses: google/clusterfuzzlite/actions/build_fuzzers@v1
+      uses: google/clusterfuzzlite/actions/build_fuzzers@master
       with:
+        github-token: ${{ secrets.TOKEN }}
         oss-fuzz-project-name: 'Dvpwa'
         language: python
         dry-run: false
         sanitizer: ${{ matrix.sanitizer }}
         
     - name: Run Fuzzers (${{ matrix.sanitizer }})
-      uses: google/clusterfuzzlite/actions/build_fuzzers@v1
+      uses: google/clusterfuzzlite/actions/build_fuzzers@master
       with:
+        github-token: ${{ secrets.TOKEN }}
         oss-fuzz-project-name: 'Dvpwa'
         language: python
         fuzz-seconds: 600
