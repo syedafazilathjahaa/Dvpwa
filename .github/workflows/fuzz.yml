@@ -6,11 +6,10 @@ name: Python application
 on:
   push:
     branches: [ master ]
-    paths: [infra/**, projects/**]
+    
   pull_request:
     branches: [ master ]
-    paths: [infra/**, projects/**]
-    
+       
 
 permissions:
   contents: read
