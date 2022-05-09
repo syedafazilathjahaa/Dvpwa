@@ -30,6 +30,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install atheris
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        ls -la
+        working-directory: ${{ github.workspace }}/tmp
         
     - name: Build and push docker image
       uses: mr-smithers-excellent/docker-build-push@v4
