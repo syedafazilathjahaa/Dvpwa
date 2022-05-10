@@ -54,7 +54,6 @@ jobs:
       uses: google/clusterfuzzlite/actions/build_fuzzers@v1
       with:
         github-token: ${{ secrets.TOKEN }}
-        oss-fuzz-project-name: 'Dvpwa'
         language: python
         dry-run: false
         sanitizer: ${{ matrix.sanitizer }}
@@ -69,7 +68,6 @@ jobs:
       uses: google/clusterfuzzlite/actions/run_fuzzers@v1
       with:
         github-token: ${{ secrets.TOKEN }}
-        oss-fuzz-project-name: 'Dvpwa'
         language: python
         fuzz-seconds: 600
         mode: 'batch'
