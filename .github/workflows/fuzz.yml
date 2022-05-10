@@ -53,7 +53,6 @@ jobs:
       id: build
       uses: google/clusterfuzzlite/actions/build_fuzzers@v1
       with:
-        github-token: ${{ secrets.TOKEN }}
         language: python
         dry-run: false
         sanitizer: ${{ matrix.sanitizer }}
@@ -67,7 +66,6 @@ jobs:
     - name: Run Fuzzers (${{ matrix.sanitizer }})
       uses: google/clusterfuzzlite/actions/run_fuzzers@v1
       with:
-        github-token: ${{ secrets.TOKEN }}
         language: python
         fuzz-seconds: 600
         mode: 'batch'
@@ -86,7 +84,6 @@ jobs:
       id: run
       uses: google/clusterfuzzlite/actions/run_fuzzers@v1
       with:
-        github-token: ${{ secrets.TOKEN }}
         fuzz-seconds: 600
         mode: 'coverage'
         sanitizer: 'coverage'
