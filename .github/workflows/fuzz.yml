@@ -71,7 +71,7 @@ jobs:
         mode: 'batch'
         dry-run: false
         sanitizer: ${{ matrix.sanitizer }}
-        storage-repo: https://${{ secrets.TOKEN }}@github.com/syedafazilathjahaa/Dvpwa-corpus.git
+        storage-repo: https://${{ secrets.TOKEN }}@github.com/Clusterfuzzlite.git
         storage-repo-branch: master
       
   
@@ -96,7 +96,7 @@ jobs:
         github-token: ${{ secrets.TOKEN }}
         fuzz-seconds: 120
         mode: 'prune'
-        storage-repo: https://${{ secrets.TOKEN }}@github.com/syedafazilathjahaa/Dvpwa-corpus.git
+        storage-repo: https://${{ secrets.TOKEN }}@github.com/Clusterfuzzlite.git
         storage-repo-branch: master
       
   
@@ -120,7 +120,7 @@ jobs:
         language: python
         mode: 'coverage'
         sanitizer: 'coverage'
-        storage-repo: https://${{ secrets.TOKEN }}@github.com/syedafazilathjahaa/Dvpwa-corpus.git
+        storage-repo: https://${{ secrets.TOKEN }}@github.com/Clusterfuzzlite.git
         storage-repo-branch: master
       
         
