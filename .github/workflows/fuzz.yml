@@ -1,26 +1,24 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Python application
+name: Fuzzer
 
 on:
-  push:
-    branches: [ master ]
-    
+
   pull_request:
     branches: [ master ]
+    
+    paths:
+      - '**.py'
        
-
-
-  
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
 
-    runs-on: ubuntu-latest    
-     
+    runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.10
@@ -32,6 +30,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install atheris
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
         
     - name: Build and push docker image
       uses: mr-smithers-excellent/docker-build-push@v4
@@ -43,55 +42,43 @@ jobs:
   
   
   Fuzzing:
-     runs-on: ubuntu-latest
-     concurrency:
-      group: ${{ github.workflow }}-${{ matrix.sanitizer }}-${{ github.ref }}
-      cancel-in-progress: true
-     strategy:
+    runs-on: ubuntu-latest
+    strategy:
         fail-fast: false
         matrix:
             sanitizer: [address]
-     steps:
-     - uses: actions/checkout@v3
-     - name: Build Fuzzers (${{ matrix.sanitizer }})
-       id: build
-       uses: google/clusterfuzzlite/actions/build_fuzzers@v1
-       with:
-        github-token: ${{ secrets.TOKEN }}    
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build Fuzzers (${{ matrix.sanitizer }})
+      id: build
+      uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         language: python
         dry-run: false
         sanitizer: ${{ matrix.sanitizer }}
-        upload-build: true
-        keep-unaffected-fuzz-targets: true
         
-     - name: Scan Report
-       uses: actions/upload-artifact@v2
-       with:
+    - name: Scan Report
+      uses: actions/upload-artifact@v2
+      with:
           name: scan-report
-          path: 'report.html' 
+          path: 'report.html'    
         
-     - name: Run Fuzzers (${{ matrix.sanitizer }})
-       uses: google/clusterfuzzlite/actions/run_fuzzers@v1
-       with:
-        github-token: ${{ secrets.TOKEN }}
+    - name: Run Fuzzers (${{ matrix.sanitizer }})
+      uses: google/oss-fuzz/infra/cifuzz/actions/run_fuzzers@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         language: python
-        fuzz-seconds: 200
+        fuzz-seconds: 120
         mode: 'batch'
         dry-run: false
-        minimize-crashes: 1
-        report-unreproducible-crashes: true
-        keep-unaffected-fuzz-targets: true
         sanitizer: ${{ matrix.sanitizer }}
-        
-        # See later section on "Git repo for storage".
-        storage-repo: https://${{ secrets.TOKEN }}@github.com/khushbureddy-gangarapu/khushbureddy-gangarapu.github.io.git
-        storage-repo-branch: master   # Optional. Defaults to "main"
-        storage-repo-branch-coverage: master  # Optional. Defaults to "gh-pages".
-        
+        storage-repo: https://${{ secrets.TOKEN }}@github.com/syedafazilathjahaa/Dvpwa-corpus.git
+        storage-repo-branch: master
+      
+  
   Pruning:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
     
     - name: Build Fuzzers
@@ -100,6 +87,7 @@ jobs:
       with:
         language: python
         upload-build: true
+      
         
 
     - name: Run Fuzzers
@@ -108,20 +96,16 @@ jobs:
       with:
         language: python
         github-token: ${{ secrets.TOKEN }}
-        fuzz-seconds: 200
+        fuzz-seconds: 120
         mode: 'prune'
-        # Optional but recommended.
-        # See later section on "Git repo for storage".
-        storage-repo: https://${{ secrets.TOKEN }}@github.com/khushbureddy-gangarapu/khushbureddy-gangarapu.github.io.git
-        storage-repo-branch: master   # Optional. Defaults to "main"
-        storage-repo-branch-coverage: master  # Optional. Defaults to "gh-pages".
+        storage-repo: https://${{ secrets.TOKEN }}@github.com/syedafazilathjahaa/Dvpwa-corpus.git
+        storage-repo-branch: master
+      
   
-  
+
+ 
   Coverage:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
     - name: Build Fuzzers
       id: build
@@ -129,18 +113,18 @@ jobs:
       with:
         sanitizer: coverage
         language: python
-        
     - name: Run Fuzzers
       id: run
       uses: google/clusterfuzzlite/actions/run_fuzzers@v1
       with:
-        github-token: ${{ secrets.TOKEN }}
-        fuzz-seconds: 200
-        mode: 'coverage'
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        fuzz-seconds: 600
         language: python
+        mode: 'coverage'
         sanitizer: 'coverage'
-        # Optional but recommended.
-        # See later section on "Git repo for storage".
-        storage-repo: https://${{ secrets.TOKEN }}@github.com/khushbureddy-gangarapu/khushbureddy-gangarapu.github.io.git
-        storage-repo-branch: master   # Optional. Defaults to "main"
-        storage-repo-branch-coverage: master  # Optional. Defaults to "gh-pages".
+        storage-repo: https://${{ secrets.TOKEN }}@github.com/syedafazilathjahaa/Dvpwa-corpus.git
+        storage-repo-branch: master
+      
+        
+        
+      
