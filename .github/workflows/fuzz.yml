@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Fuzzer
+name: Python application
 
 on:
   push:
@@ -9,15 +9,17 @@ on:
     
   pull_request:
     branches: [ master ]
-       
+  schedule:
+    - cron: '0 0/2 * * *'  # Every 6th hour
+  
 permissions:
   contents: read
 
 jobs:
   build:
 
-    runs-on: ubuntu-latest
-
+    runs-on: ubuntu-latest    
+     
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.10
@@ -40,41 +42,45 @@ jobs:
   
   
   Fuzzing:
-    runs-on: ubuntu-latest
-    strategy:
+     runs-on: ubuntu-latest
+     concurrency:
+      group: ${{ github.workflow }}-${{ matrix.sanitizer }}-${{ github.ref }}
+      cancel-in-progress: true
+     strategy:
         fail-fast: false
         matrix:
             sanitizer: [address]
-    steps:
-    - uses: actions/checkout@v3
-    - name: Build Fuzzers (${{ matrix.sanitizer }})
-      id: build
-      uses: google/clusterfuzzlite/actions/build_fuzzers@v1
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+     steps:
+     - uses: actions/checkout@v3
+     - name: Build Fuzzers (${{ matrix.sanitizer }})
+       id: build
+       uses: google/clusterfuzzlite/actions/build_fuzzers@v1
+       with:
+        github-token: ${{ secrets.TOKEN }}    
         language: python
         dry-run: false
         sanitizer: ${{ matrix.sanitizer }}
+        upload-build: true
+        keep-unaffected-fuzz-targets: true
+     
         
-    - name: Scan Report
-      uses: actions/upload-artifact@v2
-      with:
-          name: scan-report
-          path: 'report.html'    
-        
-    - name: Run Fuzzers (${{ matrix.sanitizer }})
-      uses: google/clusterfuzzlite/actions/run_fuzzers@v1
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+     - name: Run Fuzzers (${{ matrix.sanitizer }})
+       uses: google/clusterfuzzlite/actions/run_fuzzers@v1
+       with:
+        github-token: ${{ secrets.TOKEN }}
         language: python
-        fuzz-seconds: 120
+        fuzz-seconds: 800
         mode: 'batch'
         dry-run: false
+        report-unreproducible-crashes: true
+        keep-unaffected-fuzz-targets: true
         sanitizer: ${{ matrix.sanitizer }}
-        storage-repo: https://${{ secrets.TOKEN }}@github.com/Clusterfuzzlite/Dvpwa.git
-        storage-repo-branch: master
-      
-  
+        
+        # See later section on "Git repo for storage".
+        storage-repo: https://${{ secrets.TOKEN }}@github.com/khushbureddy-gangarapu/khushbureddy-gangarapu.github.io.git
+        storage-repo-branch: master   # Optional. Defaults to "main"
+        storage-repo-branch-coverage: master  # Optional. Defaults to "gh-pages".
+        
   Pruning:
     runs-on: ubuntu-latest
     steps:
@@ -85,7 +91,6 @@ jobs:
       with:
         language: python
         upload-build: true
-      
         
 
     - name: Run Fuzzers
@@ -94,16 +99,18 @@ jobs:
       with:
         language: python
         github-token: ${{ secrets.TOKEN }}
-        fuzz-seconds: 120
+        fuzz-seconds: 800
         mode: 'prune'
-        storage-repo: https://${{ secrets.TOKEN }}@github.com/Clusterfuzzlite/Dvpwa.git
-        storage-repo-branch: master
-      
+        # Optional but recommended.
+        # See later section on "Git repo for storage".
+        storage-repo: https://${{ secrets.TOKEN }}@github.com/khushbureddy-gangarapu/khushbureddy-gangarapu.github.io.git
+        storage-repo-branch: master   # Optional. Defaults to "main"
+        storage-repo-branch-coverage: master  # Optional. Defaults to "gh-pages".
   
-
- 
+  
   Coverage:
     runs-on: ubuntu-latest
+   
     steps:
     - name: Build Fuzzers
       id: build
@@ -111,16 +118,16 @@ jobs:
       with:
         sanitizer: coverage
         language: python
+        
     - name: Run Fuzzers
       id: run
       uses: google/clusterfuzzlite/actions/run_fuzzers@v1
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        fuzz-seconds: 600
-        language: python
+        github-token: ${{ secrets.TOKEN }}
+        fuzz-seconds: 800
         mode: 'coverage'
+        language: python
         sanitizer: 'coverage'
-        storage-repo: https://${{ secrets.TOKEN }}@github.com/Clusterfuzzlite/Dvpwa.git
-        storage-repo-branch: master
-      
-        
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v2        
+ 
