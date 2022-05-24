@@ -9,8 +9,7 @@ on:
     
   pull_request:
     branches: [ master ]
-  schedule:
-    - cron: '0 0/2 * * *'  # Every 6th hour
+ 
   
 permissions:
   contents: read
@@ -127,7 +126,5 @@ jobs:
         fuzz-seconds: 800
         mode: 'coverage'
         language: python
-        sanitizer: 'coverage'
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v2        
+        sanitizer: 'coverage'      
  
