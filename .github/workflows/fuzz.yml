@@ -53,7 +53,7 @@ jobs:
      - uses: actions/checkout@v3
      - name: Build Fuzzers (${{ matrix.sanitizer }})
        id: build
-       uses: google/clusterfuzzlite/actions/build_fuzzers@v1
+       uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@master
        with:
         github-token: ${{ secrets.TOKEN }}    
         language: python
@@ -64,7 +64,7 @@ jobs:
      
         
      - name: Run Fuzzers (${{ matrix.sanitizer }})
-       uses: google/clusterfuzzlite/actions/run_fuzzers@v1
+       uses: google/oss-fuzz/infra/cifuzz/actions/run_fuzzers@master
        with:
         github-token: ${{ secrets.TOKEN }}
         language: python
@@ -86,7 +86,7 @@ jobs:
     
     - name: Build Fuzzers
       id: build
-      uses: google/clusterfuzzlite/actions/build_fuzzers@v1
+      uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@master
       with:
         language: python
         upload-build: true
@@ -94,7 +94,7 @@ jobs:
 
     - name: Run Fuzzers
       id: run
-      uses: google/clusterfuzzlite/actions/run_fuzzers@v1
+      uses: google/oss-fuzz/infra/cifuzz/actions/run_fuzzers@master
       with:
         language: python
         github-token: ${{ secrets.TOKEN }}
@@ -113,14 +113,14 @@ jobs:
     steps:
     - name: Build Fuzzers
       id: build
-      uses: google/clusterfuzzlite/actions/build_fuzzers@v1
+      uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@master
       with:
         sanitizer: coverage
         language: python
         
     - name: Run Fuzzers
       id: run
-      uses: google/clusterfuzzlite/actions/run_fuzzers@v1
+      uses:  google/oss-fuzz/infra/cifuzz/actions/run_fuzzers@master
       with:
         github-token: ${{ secrets.TOKEN }}
         fuzz-seconds: 800
