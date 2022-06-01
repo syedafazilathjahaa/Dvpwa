@@ -65,7 +65,7 @@ jobs:
      
         
      - name: Run Fuzzers (${{ matrix.sanitizer }})
-       uses: google/oss-fuzz/infra/cifuzz/actions/run_fuzzers@master
+       uses: clusterfuzzlite/oss-fuzz/infra/cifuzz/actions/run_fuzzers@master
        with:
         ENGINE: ${{ matrix.engine }}
         github-token: ${{ secrets.TOKEN }}
