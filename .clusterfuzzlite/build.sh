@@ -1,5 +1,5 @@
 
-for fuzzer in $(find $SRC -name '*_fuzzer.py');do
+for fuzzer in $(find $SRC -name 'bad_fuzzer.py');do
   fuzzer_basename=$(basename -s .py $fuzzer)
   fuzzer_package=${fuzzer_basename}.pkg
   # To avoid issues with Python version conflicts, or changes in environment
