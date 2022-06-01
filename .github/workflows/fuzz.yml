@@ -53,7 +53,7 @@ jobs:
      - uses: actions/checkout@v3
      - name: Build Fuzzers (${{ matrix.sanitizer }})
        id: build
-       uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@master
+       uses: clusterfuzzlite/oss-fuzz/infra/cifuzz/actions/build_fuzzers@master
        with:
         ENGINE: ${{ matrix.engine }}
         github-token: ${{ secrets.TOKEN }}    
